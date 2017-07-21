@@ -5,14 +5,14 @@ from sklearn.model_selection import StratifiedShuffleSplit
 
 problem_title =\
     'Cell population identification from single-cell mass cytometry data'
-_target_column_name = 'label'
+_target_column_name = 'cell type'
 _prediction_label_names = [
     'B-cell Frac A-C (pro-B cells)', 'Basophils', 'CD4 T cells', 'CD8 T cells',
-    'CLP', 'CMP','Classical Monocytes', 'Eosinophils', 'GMP', 'HSC',
-    'IgD- IgMpos B cells', 'IgDpos IgMpos B cells','IgM- IgD- B-cells',
+    'CLP', 'CMP', 'Classical Monocytes', 'Eosinophils', 'GMP', 'HSC',
+    'IgD- IgMpos B cells', 'IgDpos IgMpos B cells', 'IgM- IgD- B-cells',
     'Intermediate Monocytes', 'MEP', 'MPP', 'Macrophages', 'NK cells',
     'NKT cells', 'Non-Classical Monocytes', 'Plasma Cells', 'gd T cells',
-    'mDCs', 'pDCs' ]
+    'mDCs', 'pDCs']
 # A type (class) which will be used to create wrapper objects for y_pred
 Predictions = rw.prediction_types.make_multiclass(
     label_names=_prediction_label_names)
@@ -20,7 +20,7 @@ Predictions = rw.prediction_types.make_multiclass(
 workflow = rw.workflows.FeatureExtractorClassifier()
 
 score_types = [
-#    rw.score_types.BAC(name='bac', precision=3),
+    rw.score_types.BalancedAccuracy(name='bac', precision=3),
     rw.score_types.Accuracy(name='accuracy', precision=3),
 ]
 
@@ -28,6 +28,17 @@ score_types = [
 def get_cv(X, y):
     cv = StratifiedShuffleSplit(n_splits=8, test_size=0.5, random_state=57)
     return cv.split(X, y)
+
+
+# def get_cv(X, y):
+#     unique_replicates = np.unique(X['replicate'])
+#     r = np.arange(len(X))
+#     for replicate in unique_replicates:
+#         train_is = r[(X['replicate'] != replicate).values]
+#         test_is = r[(X['replicate'] == replicate).values]
+#         print np.unique(y[train_is]).shape
+#         print np.unique(y[test_is]).shape
+#         yield train_is, test_is
 
 
 def _read_data(path, f_name):
