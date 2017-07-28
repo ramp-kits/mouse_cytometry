@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pandas as pd
 import rampwf as rw
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -25,20 +26,20 @@ score_types = [
 ]
 
 
-def get_cv(X, y):
-    cv = StratifiedShuffleSplit(n_splits=8, test_size=0.5, random_state=57)
-    return cv.split(X, y)
-
-
 # def get_cv(X, y):
-#     unique_replicates = np.unique(X['replicate'])
-#     r = np.arange(len(X))
-#     for replicate in unique_replicates:
-#         train_is = r[(X['replicate'] != replicate).values]
-#         test_is = r[(X['replicate'] == replicate).values]
-#         print np.unique(y[train_is]).shape
-#         print np.unique(y[test_is]).shape
-#         yield train_is, test_is
+#     cv = StratifiedShuffleSplit(n_splits=8, test_size=0.5, random_state=57)
+#     return cv.split(X, y)
+
+
+def get_cv(X, y):
+    unique_replicates = np.unique(X['replicate'])
+    r = np.arange(len(X))
+    for replicate in unique_replicates:
+        train_is = r[(X['replicate'] != replicate).values]
+        test_is = r[(X['replicate'] == replicate).values]
+        print np.unique(y[train_is]).shape
+        print np.unique(y[test_is]).shape
+        yield train_is, test_is
 
 
 def _read_data(path, f_name):
