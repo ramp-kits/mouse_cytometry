@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import rampwf as rw
-from sklearn.model_selection import StratifiedShuffleSplit
 
 problem_title =\
     'Cell population identification from single-cell mass cytometry data'
@@ -21,14 +20,10 @@ Predictions = rw.prediction_types.make_multiclass(
 workflow = rw.workflows.FeatureExtractorClassifier()
 
 score_types = [
-    rw.score_types.BalancedAccuracy(name='bac', precision=3),
-    rw.score_types.Accuracy(name='accuracy', precision=3),
+    rw.score_types.BalancedAccuracy(name='bac', precision=2),
+    rw.score_types.Accuracy(name='acc', precision=3),
+    rw.score_types.NegativeLogLikelihood(name='nll', precision=2),
 ]
-
-
-# def get_cv(X, y):
-#     cv = StratifiedShuffleSplit(n_splits=8, test_size=0.5, random_state=57)
-#     return cv.split(X, y)
 
 
 def get_cv(X, y):
@@ -37,8 +32,6 @@ def get_cv(X, y):
     for replicate in unique_replicates:
         train_is = r[(X['replicate'] != replicate).values]
         test_is = r[(X['replicate'] == replicate).values]
-        print np.unique(y[train_is]).shape
-        print np.unique(y[test_is]).shape
         yield train_is, test_is
 
 
