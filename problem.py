@@ -20,9 +20,9 @@ Predictions = rw.prediction_types.make_multiclass(
 workflow = rw.workflows.FeatureExtractorClassifier()
 
 score_types = [
-    rw.score_types.BalancedAccuracy(name='bac', precision=2),
+    rw.score_types.BalancedAccuracy(name='bac', precision=3),
     rw.score_types.Accuracy(name='acc', precision=3),
-    rw.score_types.NegativeLogLikelihood(name='nll', precision=2),
+    rw.score_types.NegativeLogLikelihood(name='nll', precision=3),
 ]
 
 
